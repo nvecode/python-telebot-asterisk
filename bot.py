@@ -5,15 +5,14 @@ import logging
 import datetime
 
 # Bot token
-bot_token = '6923029488:AAESTVSMgwSXlpsTk2eX8wbTFZ-PZKwqXUY'
+bot_token = ''
 bot = telebot.TeleBot(bot_token)
 
 # Users
 trusted_users = {
-    'Администратор': 460221344,
-    'Зарема': 1239108995,
-    'Лёха': 6279706281
+    'Администратор': ''
 }
+
 # Create files
 logging.basicConfig(filename='event_bot.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
@@ -25,8 +24,8 @@ def start(message):
     else:
         global keyboard
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-        btn1 = types.KeyboardButton('Выключить КЦ')
-        btn2 = types.KeyboardButton('Включить КЦ')
+        btn1 = types.KeyboardButton('Выключить правило')
+        btn2 = types.KeyboardButton('Включить правило')
         keyboard.add(btn1, btn2)
 
         bot.send_message(message.chat.id, "Выберите действие:", reply_markup=keyboard)
@@ -44,20 +43,19 @@ def on_click(message):
     button_pressed = message.text
     logging.info(f'User {user_id} pressed the button: {button_pressed}')
 
-    if message.text == 'Выключить КЦ':
-        command = '/home/master/telebot-python/python-bot-callcenter/disableKC.sh'
+    if message.text == 'Выключить правило':
+        command = '/home/master/telebot-python/python-bot-callcenter/disable.sh'
         subprocess.run(command, shell=True, text=True, timeout=60)
-        bot.send_message(message.chat.id, f'Контакт центр успешно выключён!')
+        bot.send_message(message.chat.id, f'Правило успешно выключёно!')
         sendMessageAdmin(user_id, message.text)
         bot.send_message(message.chat.id, "Выберите команду:", reply_markup=keyboard)
 
-    elif message.text == 'Включить КЦ':
-        command = '/home/master/telebot-python/python-bot-callcenter/enableKC.sh'
+    elif message.text == 'Включить правило':
+        command = '/home/master/telebot-python/python-bot-callcenter/enable.sh'
         subprocess.run(command, shell=True, text=True, timeout=60)
-        bot.send_message(message.chat.id, f'Контакт центр успешно включён!')
+        bot.send_message(message.chat.id, f'Правило успешно включёно!')
         sendMessageAdmin(user_id, message.text)
         bot.send_message(message.chat.id, "Выберите команду:", reply_markup=keyboard)
 
 # Start bot
 bot.polling(none_stop=True)
-
